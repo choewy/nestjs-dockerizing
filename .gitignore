@@ -1,6 +1,7 @@
 # docker
 docker/mongodb/data
 docker/mongodb/logs
+docker/redis/data
 
 # env
 .env
