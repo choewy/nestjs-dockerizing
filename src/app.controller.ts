@@ -1,15 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 
-import { IgnoreSaveLog } from '@app-core/metadata';
+import { SkipSaveLog } from '@app-core/metadata';
+import { HttpTraffic10SecondsGuard } from '@app-core/traffic';
 
 import { AppService } from './app.service';
 
+@UseGuards(HttpTraffic10SecondsGuard)
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  @IgnoreSaveLog()
+  @SkipSaveLog()
   getVersion(): string {
     return this.appService.getVersion();
   }

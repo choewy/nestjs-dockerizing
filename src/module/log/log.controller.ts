@@ -1,20 +1,23 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+
+import { SkipSaveLog } from '@app-core/metadata';
+import { HttpTraffic10SecondsGuard } from '@app-core/traffic';
 
 import { LogService } from './log.service';
-import { IgnoreSaveLog } from '@app-core/metadata';
 
+@UseGuards(HttpTraffic10SecondsGuard)
 @Controller('logs')
 export class LogController {
   constructor(private readonly logService: LogService) {}
 
   @Get('request')
-  @IgnoreSaveLog()
+  @SkipSaveLog()
   async getRequestLogs() {
     return this.logService.getRequestLogs();
   }
 
   @Get('error')
-  @IgnoreSaveLog()
+  @SkipSaveLog()
   async getErrorLogs() {
     return this.logService.getErrorLogs();
   }
