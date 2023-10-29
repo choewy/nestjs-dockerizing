@@ -18,19 +18,6 @@ services:
       - container-bridge
     restart: always
 
-  redis:
-    container_name: redis
-    build:
-      context: ./redis
-      dockerfile: dockerfile
-    volumes:
-      - ./redis/data:/data
-    ports:
-      - 6380:6379
-    networks:
-      - container-bridge
-    restart: always
-
 networks:
   container-bridge:
     name: container-bridge
