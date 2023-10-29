@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mongo:
+    container_name: mongo
+    build:
+      context: ./mongodb
+      dockerfile: dockerfile
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./mongodb/data:/var/lib/mongodb
+      - ./mongodb/logs/log:/var/log/mongodb
+    ports:
+      - 27018:27017
+    restart: always
