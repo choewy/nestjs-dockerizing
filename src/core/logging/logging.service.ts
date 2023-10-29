@@ -1,21 +1,22 @@
 import { Model } from 'mongoose';
 
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { MongoConnectionName } from '@app-common/enums';
 import { CustomRequest } from '@app-common/interfaces';
-import { HttpRequestLog } from '@app-common/schemas';
+import { RequestLog } from '@app-common/schemas';
 
 @Injectable()
 export class LoggingService {
   constructor(
-    @InjectModel(HttpRequestLog.name, MongoConnectionName.Logs)
-    private readonly httpRequestLogModel: Model<HttpRequestLog>,
+    @InjectModel(RequestLog.name, MongoConnectionName.Logs)
+    private readonly requestLogModel: Model<RequestLog>,
   ) {}
 
-  async saveHttpRequestLog(request: CustomRequest, error?: unknown): Promise<HttpRequestLog> {
-    return new this.httpRequestLogModel({
+  async saveHttpRequestLog(request: CustomRequest, exception?: HttpException): Promise<RequestLog> {
+    return new this.requestLogModel({
+      protocol: 'http',
       requestId: request.requestId,
       ip: request.ip,
       method: request.method,
@@ -23,7 +24,7 @@ export class LoggingService {
       body: request.body,
       params: request.params,
       query: request.query,
-      error,
+      exception: exception ? exception.getResponse() : undefined,
     }).save();
   }
 }

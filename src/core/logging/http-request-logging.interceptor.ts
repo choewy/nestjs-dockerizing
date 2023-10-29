@@ -1,7 +1,7 @@
 import { Observable, catchError, tap } from 'rxjs';
 import { v4 } from 'uuid';
 
-import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor, Scope } from '@nestjs/common';
+import { CallHandler, ExecutionContext, HttpException, HttpStatus, Injectable, Logger, NestInterceptor, Scope } from '@nestjs/common';
 
 import { CustomRequest } from '@app-common/interfaces';
 
@@ -30,12 +30,25 @@ export class HttpRequestLoggingInterceptor implements NestInterceptor {
           .saveHttpRequestLog(request)
           .then((httpRequestLog) => this.logger.verbose(new HttpRequestLogDto(httpRequestLog).toMessage(), context));
       }),
-      catchError((error) => {
-        this.loggingService
-          .saveHttpRequestLog(request)
-          .then((httpRequestLog) => this.logger.warn(new HttpRequestLogDto(httpRequestLog).toMessage(), context));
+      catchError(async (e) => {
+        let exception: HttpException = e;
 
-        throw error;
+        if (e instanceof HttpException === false) {
+          exception = new HttpException(
+            {
+              error: 'Internal Server Error',
+              message: 'internal server error exception',
+              statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            },
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+          exception.cause = e;
+        }
+
+        const httpRequestLog = await this.loggingService.saveHttpRequestLog(request, exception);
+        this.logger.warn(new HttpRequestLogDto(httpRequestLog, exception.cause).toMessage(), context);
+
+        throw exception;
       }),
     );
   }

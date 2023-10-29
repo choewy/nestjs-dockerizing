@@ -5,7 +5,7 @@ export enum NodeEnv {
 }
 
 export enum MongoDbName {
-  Logs = 'logs',
+  App = 'app',
 }
 
 export enum MongoConnectionName {

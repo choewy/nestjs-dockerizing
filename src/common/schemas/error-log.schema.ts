@@ -4,8 +4,17 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 export class ErrorLog {
+  @Prop({ required: true })
+  errorId: string;
+
   @Prop()
   requestId?: string;
+
+  @Prop()
+  name?: string;
+
+  @Prop()
+  message?: string;
 
   @Prop()
   className?: string;

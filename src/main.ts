@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 
-import { HttpRequestLoggingInterceptor } from '@app-core/interceptors';
-import { HttpExceptionCatchFilter } from '@app-core/filters';
+import { HttpRequestLoggingInterceptor } from '@app-core/logging';
+import { HttpExceptionCatchFilter } from '@app-core/catch';
 
 import { AppModule } from './app.module';
 

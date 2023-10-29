@@ -19,8 +19,15 @@ export class HttpExceptionResponseDto {
       this.error = {
         name: error.name,
         message: error.message,
-        cause: error.cause,
       };
     }
+  }
+
+  public toJsonString(): string {
+    return JSON.stringify(this, null, 2);
+  }
+
+  public toMessage(): string {
+    return `${this.name} - ${this.message} - (${this.requestId}) - ${this.toJsonString()}`;
   }
 }

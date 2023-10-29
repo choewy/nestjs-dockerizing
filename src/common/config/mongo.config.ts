@@ -1,7 +1,4 @@
 import { ConfigService } from '@nestjs/config';
-import { MongooseModuleOptions } from '@nestjs/mongoose';
-
-import { MongoConnectionName, MongoDbName } from '@app-common/enums';
 
 export class MongoConfig {
   private readonly configService = new ConfigService();
@@ -13,9 +10,5 @@ export class MongoConfig {
 
   public getConnectionUrl(): string {
     return `mongodb://${this.MONGO_USERNAME}:${this.MONGO_PASSWORD}@${this.MONGO_HOST}:${this.MONGO_PORT}`;
-  }
-
-  public getLogConnectionOptions(): MongooseModuleOptions {
-    return { dbName: MongoDbName.Logs, connectionName: MongoConnectionName.Logs };
   }
 }

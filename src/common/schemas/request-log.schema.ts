@@ -1,20 +1,27 @@
 import { HydratedDocument, SchemaTypes } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HttpException } from '@nestjs/common';
 
 @Schema()
-export class HttpRequestLog {
+export class RequestLog {
   @Prop({ required: true })
   requestId: string;
 
   @Prop({ required: true })
-  ip: string;
+  protocol: string;
 
-  @Prop({ required: true })
-  method: string;
+  @Prop()
+  ip?: string;
 
-  @Prop({ required: true })
-  path: string;
+  @Prop()
+  method?: string;
+
+  @Prop()
+  path?: string;
+
+  @Prop()
+  event?: string;
 
   @Prop({ type: SchemaTypes.Mixed })
   body?: Record<string, any>;
@@ -26,8 +33,8 @@ export class HttpRequestLog {
   query?: Record<string, any>;
 
   @Prop({ type: SchemaTypes.Mixed })
-  error?: unknown;
+  exception?: HttpException;
 }
 
-export type HttpRequestLogDocument = HydratedDocument<HttpRequestLog>;
-export const HttpRequestLogSchema = SchemaFactory.createForClass(HttpRequestLog);
+export type RequestLogDocument = HydratedDocument<RequestLog>;
+export const RequestLogSchema = SchemaFactory.createForClass(RequestLog);
