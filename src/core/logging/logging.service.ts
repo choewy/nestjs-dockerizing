@@ -26,6 +26,7 @@ export class LoggingService {
       query: request.query,
       success: !exception,
       exception: exception ? exception.getResponse() : undefined,
+      date: new Date(),
     });
 
     if (skipSaveLog) {

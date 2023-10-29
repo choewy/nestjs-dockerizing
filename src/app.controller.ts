@@ -1,7 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
 import { ThrottlerName } from '@app-common/enums';
-import { SkipSaveLog } from '@app-common/metadata';
 import { HttpTrafficGuard } from '@app-core/traffic';
 
 import { AppService } from './app.service';
@@ -12,7 +11,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  @SkipSaveLog()
+  // @SkipSaveLog()
   getVersion(): string {
     return this.appService.getVersion();
   }
