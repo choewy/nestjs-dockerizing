@@ -1,9 +1,10 @@
 import { Reflector } from '@nestjs/core';
 import { ExecutionContext } from '@nestjs/common';
-import { ThrottlerException, ThrottlerGuard, ThrottlerOptions } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerOptions } from '@nestjs/throttler';
 
 import { CustomRequest } from '@app-common/interfaces';
 import { RedisService } from '@app-core/redis';
+import { TooManyRequestsException } from '@app-common/exceptions';
 
 import { TrafficStorage } from './traffic.storage';
 
@@ -24,7 +25,7 @@ export class HttpTrafficBaseGuard extends ThrottlerGuard {
     const { totalHits } = await this.storageService.increment(key, ttl);
 
     if (totalHits > limit) {
-      throw new ThrottlerException();
+      throw new TooManyRequestsException();
     }
 
     return true;

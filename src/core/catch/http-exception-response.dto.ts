@@ -12,7 +12,7 @@ export class HttpExceptionResponseDto {
   constructor(exception: HttpException, request?: CustomRequest, error?: unknown) {
     this.requestId = request?.requestId;
     this.status = exception.getStatus();
-    this.name = exception.name;
+    this.name = exception.name.replace('Exception', '');
     this.message = exception.message;
 
     if (error instanceof Error) {

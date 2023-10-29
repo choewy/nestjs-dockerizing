@@ -6,10 +6,10 @@ import { Reflector } from '@nestjs/core';
 
 import { CustomRequest } from '@app-common/interfaces';
 import { MetadataKey } from '@app-common/enums';
+import { InternalServerException } from '@app-common/exceptions';
 
 import { LoggingService } from './logging.service';
 import { HttpRequestLogDto } from './http-request-logging.dto';
-import { InternalServerException } from './internal-server-exception';
 
 @Injectable({ scope: Scope.REQUEST })
 export class HttpRequestLoggingInterceptor implements NestInterceptor {
