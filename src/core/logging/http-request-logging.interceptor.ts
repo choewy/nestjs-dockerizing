@@ -26,12 +26,12 @@ export class HttpRequestLoggingInterceptor implements NestInterceptor {
     request.handlerName = ctx.getHandler()?.name;
 
     const logContext = request.className ?? request.handlerName;
-    const ignoreLog = this.reflector.getAllAndOverride<boolean>(MetadataKey.IgnoreSaveLog, [ctx.getClass(), ctx.getHandler()]);
+    const skipSaveLog = this.reflector.getAllAndOverride<boolean>(MetadataKey.SkipSaveLog, [ctx.getClass(), ctx.getHandler()]);
 
     return next.handle().pipe(
       tap(() => {
         this.loggingService
-          .saveHttpRequestLog(request, null, ignoreLog)
+          .saveHttpRequestLog(request, null, skipSaveLog)
           .then((httpRequestLog) => this.logger.verbose(new HttpRequestLogDto(httpRequestLog).toMessage(), logContext));
       }),
       catchError(async (e) => {

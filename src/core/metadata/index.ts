@@ -1,1 +1,1 @@
-export * from './ignore-log.metadata';
+export * from './skip-save-log.metadata';

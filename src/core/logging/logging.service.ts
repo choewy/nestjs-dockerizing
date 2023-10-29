@@ -14,7 +14,7 @@ export class LoggingService {
     private readonly requestLogModel: Model<RequestLog>,
   ) {}
 
-  async saveHttpRequestLog(request: CustomRequest, exception?: HttpException | null, ignoreSaveLog?: boolean): Promise<RequestLog> {
+  async saveHttpRequestLog(request: CustomRequest, exception?: HttpException | null, skipSaveLog?: boolean): Promise<RequestLog> {
     const requestLog = new this.requestLogModel({
       protocol: 'http',
       requestId: request.requestId,
@@ -28,10 +28,10 @@ export class LoggingService {
       exception: exception ? exception.getResponse() : undefined,
     });
 
-    if (!ignoreSaveLog) {
-      await requestLog.save();
+    if (skipSaveLog) {
+      return requestLog;
     }
 
-    return requestLog;
+    return requestLog.save();
   }
 }
