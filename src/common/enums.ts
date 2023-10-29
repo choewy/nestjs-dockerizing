@@ -11,3 +11,7 @@ export enum MongoDbName {
 export enum MongoConnectionName {
   Logs = 'logs',
 }
+
+export enum MetadataKey {
+  IgnoreSaveLog = 'ignore-save-log',
+}

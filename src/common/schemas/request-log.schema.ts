@@ -3,7 +3,7 @@ import { HydratedDocument, SchemaTypes } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HttpException } from '@nestjs/common';
 
-@Schema()
+@Schema({ collection: 'request_log' })
 export class RequestLog {
   @Prop({ required: true })
   requestId: string;
@@ -22,6 +22,9 @@ export class RequestLog {
 
   @Prop()
   event?: string;
+
+  @Prop()
+  success: boolean;
 
   @Prop({ type: SchemaTypes.Mixed })
   body?: Record<string, any>;

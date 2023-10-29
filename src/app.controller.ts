@@ -1,4 +1,6 @@
-import { BadRequestException, Controller, Get } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+
+import { IgnoreSaveLog } from '@app-core/metadata';
 
 import { AppService } from './app.service';
 
@@ -7,17 +9,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
+  @IgnoreSaveLog()
   getVersion(): string {
     return this.appService.getVersion();
-  }
-
-  @Get('error')
-  raiseError(): string {
-    throw new Error('any error');
-  }
-
-  @Get('exception')
-  raiseException(): string {
-    throw new BadRequestException('bad request exception');
   }
 }

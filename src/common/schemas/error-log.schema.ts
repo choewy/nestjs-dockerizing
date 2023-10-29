@@ -2,7 +2,7 @@ import { HydratedDocument, SchemaTypes } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema()
+@Schema({ collection: 'error_log' })
 export class ErrorLog {
   @Prop({ required: true })
   errorId: string;
@@ -24,6 +24,9 @@ export class ErrorLog {
 
   @Prop({ type: SchemaTypes.Mixed })
   error?: unknown;
+
+  @Prop()
+  status: string;
 
   @Prop()
   date: Date;

@@ -1,20 +1,23 @@
-import { Observable, catchError, tap } from 'rxjs';
 import { v4 } from 'uuid';
+import { Observable, catchError, tap } from 'rxjs';
 
-import { CallHandler, ExecutionContext, HttpException, HttpStatus, Injectable, Logger, NestInterceptor, Scope } from '@nestjs/common';
+import { CallHandler, ExecutionContext, HttpException, Injectable, Logger, NestInterceptor, Scope } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 
 import { CustomRequest } from '@app-common/interfaces';
+import { MetadataKey } from '@app-common/enums';
 
 import { LoggingService } from './logging.service';
 import { HttpRequestLogDto } from './http-request-logging.dto';
+import { InternalServerException } from './internal-server-exception';
 
 @Injectable({ scope: Scope.REQUEST })
 export class HttpRequestLoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger();
 
-  constructor(private readonly loggingService: LoggingService) {}
+  constructor(private readonly reflector: Reflector, private readonly loggingService: LoggingService) {}
 
-  intercept(ctx: ExecutionContext, call$: CallHandler): Observable<any> | Promise<Observable<any>> {
+  intercept(ctx: ExecutionContext, next: CallHandler): Observable<any> | Promise<Observable<any>> {
     const http = ctx.switchToHttp();
     const request = http.getRequest<CustomRequest>();
 
@@ -22,31 +25,25 @@ export class HttpRequestLoggingInterceptor implements NestInterceptor {
     request.className = ctx.getClass()?.name;
     request.handlerName = ctx.getHandler()?.name;
 
-    const context = request.className ?? request.handlerName;
+    const logContext = request.className ?? request.handlerName;
+    const ignoreLog = this.reflector.getAllAndOverride<boolean>(MetadataKey.IgnoreSaveLog, [ctx.getClass(), ctx.getHandler()]);
 
-    return call$.handle().pipe(
+    return next.handle().pipe(
       tap(() => {
         this.loggingService
-          .saveHttpRequestLog(request)
-          .then((httpRequestLog) => this.logger.verbose(new HttpRequestLogDto(httpRequestLog).toMessage(), context));
+          .saveHttpRequestLog(request, null, ignoreLog)
+          .then((httpRequestLog) => this.logger.verbose(new HttpRequestLogDto(httpRequestLog).toMessage(), logContext));
       }),
       catchError(async (e) => {
         let exception: HttpException = e;
 
         if (e instanceof HttpException === false) {
-          exception = new HttpException(
-            {
-              error: 'Internal Server Error',
-              message: 'internal server error exception',
-              statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            },
-            HttpStatus.INTERNAL_SERVER_ERROR,
-          );
-          exception.cause = e;
+          exception = new InternalServerException(e);
         }
 
-        const httpRequestLog = await this.loggingService.saveHttpRequestLog(request, exception);
-        this.logger.warn(new HttpRequestLogDto(httpRequestLog, exception.cause).toMessage(), context);
+        await this.loggingService.saveHttpRequestLog(request, exception).then((httpRequestLog) => {
+          this.logger.warn(new HttpRequestLogDto(httpRequestLog, exception.cause).toMessage(), logContext);
+        });
 
         throw exception;
       }),
