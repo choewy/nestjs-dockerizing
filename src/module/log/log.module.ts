@@ -8,8 +8,10 @@ import { LogService } from './log.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: ErrorLog.name, schema: ErrorLogSchema }]),
-    MongooseModule.forFeature([{ name: RequestLog.name, schema: RequestLogSchema }]),
+    MongooseModule.forFeature([
+      { name: ErrorLog.name, schema: ErrorLogSchema },
+      { name: RequestLog.name, schema: RequestLogSchema },
+    ]),
   ],
   controllers: [LogController],
   providers: [LogService],
