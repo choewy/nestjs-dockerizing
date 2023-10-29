@@ -1,10 +1,20 @@
 version: '3.8'
 
 services:
-  db:
+  app:
     container_name: app
     build:
       context: .
       dockerfile: dockerfile
+      args:
+        - MONGO_HOST=mongo
+        - MONGO_PORT=27017
+    networks:
+      - nestjs-dockerizing
     ports:
       - 3001:3000
+
+networks:
+  nestjs-dockerizing:
+    name: nestjs-dockerizing
+    driver: bridge

@@ -14,4 +14,11 @@ services:
       - ./mongodb/logs/log:/var/log/mongodb
     ports:
       - 27018:27017
+    networks:
+      - nestjs-dockerizing
     restart: always
+
+networks:
+  nestjs-dockerizing:
+    name: nestjs-dockerizing
+    driver: bridge
