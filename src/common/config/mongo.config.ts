@@ -1,6 +1,7 @@
-import { MongoConnectionName, MongoDbName } from '@app-common/enums';
 import { ConfigService } from '@nestjs/config';
 import { MongooseModuleOptions } from '@nestjs/mongoose';
+
+import { MongoConnectionName, MongoDbName } from '@app-common/enums';
 
 export class MongoConfig {
   private readonly configService = new ConfigService();

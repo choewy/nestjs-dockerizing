@@ -15,10 +15,10 @@ services:
     ports:
       - 27018:27017
     networks:
-      - nestjs-dockerizing
+      - container-bridge
     restart: always
 
 networks:
-  nestjs-dockerizing:
-    name: nestjs-dockerizing
+  container-bridge:
+    name: container-bridge
     driver: bridge
