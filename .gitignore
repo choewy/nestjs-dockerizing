@@ -1,6 +1,9 @@
-# development
+# docker
 docker/mongodb/data
 docker/mongodb/logs
+
+# env
+.env
 
 # compiled output
 /dist
