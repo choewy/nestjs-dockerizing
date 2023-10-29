@@ -9,6 +9,8 @@ services:
       args:
         - MONGO_HOST=mongo
         - MONGO_PORT=27017
+        - REDIS_HOST=redis
+        - REDIS_PORT=6379
     networks:
       - container-bridge
     ports:

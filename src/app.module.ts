@@ -9,7 +9,9 @@ import { LogModule } from '@app-module/log';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MongoConnectionName, MongoDbName } from '@app-common/enums';
+import { MongoConnectionName, MongoDbName, ThrottlerName } from '@app-common/enums';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { TrafficModule } from '@app-core/traffic';
 
 @Module({
   imports: [
@@ -21,6 +23,12 @@ import { MongoConnectionName, MongoDbName } from '@app-common/enums';
       dbName: MongoDbName.App,
       connectionName: MongoConnectionName.Logs,
     }),
+    ThrottlerModule.forRoot([
+      { name: ThrottlerName.Short, ttl: 1000, limit: 5 },
+      { name: ThrottlerName.Medium, ttl: 10000, limit: 20 },
+      { name: ThrottlerName.Long, ttl: 30000, limit: 50 },
+    ]),
+    TrafficModule,
     LoggingModule,
     CatchModule,
     LogModule,

@@ -4,6 +4,12 @@ export enum NodeEnv {
   Production = 'production',
 }
 
+export enum ThrottlerName {
+  Short = 'short',
+  Medium = 'medium',
+  Long = 'long',
+}
+
 export enum MongoDbName {
   App = 'app',
 }
