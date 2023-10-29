@@ -5,9 +5,21 @@ export enum NodeEnv {
 }
 
 export enum ThrottlerName {
-  Short = 'short',
-  Medium = 'medium',
-  Long = 'long',
+  S10 = '10s',
+  S30 = '30s',
+  S60 = '60s',
+}
+
+export enum ThrottlerTtl {
+  S10 = 10000,
+  S30 = 30000,
+  S60 = 60000,
+}
+
+export enum ThrottlerLimit {
+  S10 = 10,
+  S30 = 60,
+  S60 = 120,
 }
 
 export enum MongoDbName {
@@ -19,5 +31,5 @@ export enum MongoConnectionName {
 }
 
 export enum MetadataKey {
-  IgnoreSaveLog = 'ignore-save-log',
+  SkipSaveLog = 'skip-save-log',
 }
