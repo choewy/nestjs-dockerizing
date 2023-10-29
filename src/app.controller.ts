@@ -1,11 +1,12 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
+import { ThrottlerName } from '@app-common/enums';
 import { SkipSaveLog } from '@app-common/metadata';
-import { HttpTraffic10SecondsGuard } from '@app-core/traffic';
+import { HttpTrafficGuard } from '@app-core/traffic';
 
 import { AppService } from './app.service';
 
-@UseGuards(HttpTraffic10SecondsGuard)
+@UseGuards(HttpTrafficGuard(ThrottlerName.S10))
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
