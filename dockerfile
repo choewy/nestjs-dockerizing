@@ -17,6 +17,8 @@ COPY dist dist
 RUN echo \ >> .env
 RUN echo MONGO_HOST=${MONGO_HOST} >> .env
 RUN echo MONGO_PORT=${MONGO_PORT} >> .env
+RUN echo REDIS_HOST=${REDIS_HOST} >> .env
+RUN echo REDIS_PORT=${REDIS_PORT} >> .env
 
 RUN npm ci --omit=dev
 
