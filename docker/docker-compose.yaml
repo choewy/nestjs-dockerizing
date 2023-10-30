@@ -7,6 +7,7 @@ services:
       context: ./mongodb
       dockerfile: dockerfile
     environment:
+      TZ: Asia/Seoul
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
@@ -27,6 +28,28 @@ services:
       - ./redis/data:/data
     ports:
       - 6380:6379
+    networks:
+      - container-bridge
+    restart: always
+
+  mysql:
+    container_name: mysql
+    build:
+      context: ./mysql
+      dockerfile: dockerfile
+    environment:
+      TZ: Asia/Seoul
+      MYSQL_ROOT_PASSWORD: password
+    command:
+      - --bind-address=0.0.0.0
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./mysql/logs:/var/log/mysql
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/disk:/disk
+    ports:
+      - 33061:3306
     networks:
       - container-bridge
     restart: always

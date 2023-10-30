@@ -2,6 +2,9 @@
 docker/mongodb/data
 docker/mongodb/logs
 docker/redis/data
+docker/mysql/data
+docker/mysql/logs
+docker/mysql/disk
 
 # env
 .env
