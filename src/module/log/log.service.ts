@@ -4,8 +4,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { ErrorLog, RequestLog } from '@app-common/schemas';
+import { ListResponseDto } from '@app-common/dtos';
 
-import { ErrorLogResponseDto, RequestLogResponseDto } from './dto';
+import { LogType } from './enums';
+import { ErrorLogResponseDto, GetLogQueryDto, RequestLogResponseDto } from './dto';
 
 @Injectable()
 export class LogService {
@@ -16,31 +18,61 @@ export class LogService {
     private readonly errorLogModel: Model<ErrorLog>,
   ) {}
 
-  async getRequestLogs() {
-    const requestLogs = await this.requestLogModel.find().sort({ date: 'desc' }).exec();
+  private async getRequestLogsAndCount(skip: number, take: number): Promise<[number, number, Array<RequestLogResponseDto>]> {
+    const [total, requestLogs] = await Promise.all([
+      this.requestLogModel.count(),
+      this.requestLogModel.find().skip(skip).limit(take).sort({ date: 'desc' }).exec(),
+    ]);
+
     const requestIds = requestLogs.map(({ requestId }) => requestId);
     const errorLogs = await this.errorLogModel.find({ requestId: { $in: requestIds } }).exec();
 
-    return requestLogs.map(
-      (requestLog) =>
+    const rows = requestLogs.map(
+      (row) =>
         new RequestLogResponseDto(
-          requestLog,
-          errorLogs.find(({ requestId }) => requestId === requestLog.requestId),
+          row,
+          errorLogs.find(({ requestId }) => requestId === row.requestId),
         ),
     );
+
+    return [total, rows.length, rows];
   }
 
-  async getErrorLogs() {
-    const errorLogs = await this.errorLogModel.find().sort({ date: 'desc' }).exec();
+  private async getErrorLogsAndCount(skip: number, take: number): Promise<[number, number, Array<ErrorLogResponseDto>]> {
+    const [total, errorLogs] = await Promise.all([
+      this.errorLogModel.count(),
+      this.errorLogModel.find().skip(skip).limit(take).sort({ date: 'desc' }).exec(),
+    ]);
+
     const requestIds = errorLogs.filter(({ requestId }) => requestId).map(({ requestId }) => requestId);
     const requestLogs = await this.requestLogModel.find({ requestId: { $in: requestIds } }).exec();
 
-    return errorLogs.map(
-      (errorLog) =>
+    const rows = errorLogs.map(
+      (row) =>
         new ErrorLogResponseDto(
-          errorLog,
-          requestLogs.find(({ requestId }) => requestId === errorLog.requestId),
+          row,
+          requestLogs.find(({ requestId }) => requestId === row.requestId),
         ),
     );
+
+    return [total, rows.length, rows];
+  }
+
+  async getLogs(query: GetLogQueryDto) {
+    let total: number;
+    let count: number;
+    let rows: RequestLogResponseDto[] | ErrorLogResponseDto[];
+
+    switch (query.type) {
+      case LogType.Request:
+        [total, count, rows] = await this.getRequestLogsAndCount(query.skip, query.take);
+        break;
+
+      case LogType.Error:
+        [total, count, rows] = await this.getErrorLogsAndCount(query.skip, query.take);
+        break;
+    }
+
+    return new ListResponseDto(total, count, rows, query);
   }
 }

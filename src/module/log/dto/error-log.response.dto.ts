@@ -3,7 +3,6 @@ import { ErrorLog, RequestLog } from '@app-common/schemas';
 import { ErrorRequestResponseDto } from './error-request-log.response.dto';
 
 export class ErrorLogResponseDto {
-  request?: ErrorRequestResponseDto;
   errorId: string;
   name: string;
   message: string;
@@ -11,12 +10,9 @@ export class ErrorLogResponseDto {
   className: string;
   date: Date;
   error: unknown;
+  request?: ErrorRequestResponseDto;
 
   constructor(errorLog: ErrorLog, requestLog?: RequestLog) {
-    if (requestLog) {
-      this.request = new ErrorRequestResponseDto(requestLog);
-    }
-
     this.errorId = errorLog.errorId;
     this.name = errorLog.name;
     this.message = errorLog.message;
@@ -24,5 +20,9 @@ export class ErrorLogResponseDto {
     this.className = errorLog.className;
     this.date = errorLog.date;
     this.error = errorLog.error;
+
+    if (requestLog) {
+      this.request = new ErrorRequestResponseDto(requestLog);
+    }
   }
 }

@@ -12,7 +12,6 @@ export class RequestLogResponseDto {
   params: Record<string, string>;
   query: Record<string, any>;
   exception: HttpException;
-  error?: RequestErrorLogResponseDto;
 
   constructor(requestLog: RequestLog, errorLog?: ErrorLog) {
     this.requestId = requestLog.requestId;
@@ -24,7 +23,7 @@ export class RequestLogResponseDto {
     this.exception = requestLog.exception;
 
     if (errorLog) {
-      this.error = new RequestErrorLogResponseDto(errorLog);
+      this.exception.cause = new RequestErrorLogResponseDto(errorLog);
     }
   }
 }
