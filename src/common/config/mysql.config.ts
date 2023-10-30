@@ -14,6 +14,7 @@ export class MySqlConfig {
   private readonly MYSQL_USERNAME = this.configService.get<string>('MYSQL_USERNAME');
   private readonly MYSQL_PASSWORD = this.configService.get<string>('MYSQL_PASSWORD');
   private readonly MYSQL_SYNC = this.configService.get<'true' | 'false'>('MYSQL_SYNC');
+  private readonly MYSQL_DROP = this.configService.get<'true' | 'false'>('MYSQL_DROP');
   private readonly MYSQL_DB = this.configService.get<string>('MYSQL_DB');
 
   public getModuleOptions(connectionName: MySqlConnectionName, entities: Type<any>[]): TypeOrmModuleOptions {
@@ -27,7 +28,7 @@ export class MySqlConfig {
       password: this.MYSQL_PASSWORD,
       database: this.MYSQL_DB,
       synchronize: connectionName === MySqlConnectionName.Writer && this.MYSQL_SYNC === 'true',
-      dropSchema: connectionName === MySqlConnectionName.Writer && this.MYSQL_SYNC === 'true',
+      dropSchema: connectionName === MySqlConnectionName.Writer && this.MYSQL_DROP === 'true',
       logging: true,
       autoLoadEntities: true,
     };

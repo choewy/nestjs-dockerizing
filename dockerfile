@@ -11,7 +11,7 @@ ARG MYSQL_PORT
 
 WORKDIR /var/app
 
-COPY .env .env
+COPY .env.build .env
 COPY package-lock.json package-lock.json
 COPY package.json package.json
 COPY dist dist
