@@ -22,12 +22,13 @@ export enum ThrottlerLimit {
   S60 = 120,
 }
 
-export enum MongoDbName {
-  App = 'app',
-}
-
 export enum MongoConnectionName {
   Logs = 'logs',
+}
+
+export enum MySqlConnectionName {
+  Writer = 'default',
+  Reader = 'reader',
 }
 
 export enum MetadataKey {
