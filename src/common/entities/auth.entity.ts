@@ -21,14 +21,25 @@ class Relations {
 
 @Entity()
 export class Auth extends Relations {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true, comment: 'PK' })
+  @PrimaryGeneratedColumn({
+    type: 'int',
+    unsigned: true,
+    comment: 'PK',
+  })
   readonly id: number;
 
   @Column({
     type: 'varchar',
     length: 200,
+    unique: true,
   })
   email: string;
+
+  @Column({
+    type: 'varchar',
+    length: 400,
+  })
+  salt: string;
 
   @Column({
     type: 'varchar',

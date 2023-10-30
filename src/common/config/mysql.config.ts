@@ -27,6 +27,7 @@ export class MySqlConfig {
       password: this.MYSQL_PASSWORD,
       database: this.MYSQL_DB,
       synchronize: connectionName === MySqlConnectionName.Writer && this.MYSQL_SYNC === 'true',
+      dropSchema: connectionName === MySqlConnectionName.Writer && this.MYSQL_SYNC === 'true',
       logging: true,
       autoLoadEntities: true,
     };

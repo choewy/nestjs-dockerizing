@@ -3,3 +3,4 @@ export * from './app.config';
 export * from './mongo.config';
 export * from './redis.config';
 export * from './mysql.config';
+export * from './jwt.config';

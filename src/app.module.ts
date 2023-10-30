@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
 
 import { MongoConnectionName, MySqlConnectionName } from '@app-common/enums';
-import { MongoConfig, MySqlConfig } from '@app-common/config';
+import { JwtConfig, MongoConfig, MySqlConfig } from '@app-common/config';
 import * as Entities from '@app-common/entities';
 
 import { TrafficModule, TrafficOption } from '@app-core/traffic';
@@ -15,6 +15,8 @@ import { LogModule } from '@app-module/log';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from '@app-module/auth';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -26,11 +28,13 @@ import { AppService } from './app.service';
     }),
     TypeOrmModule.forRoot(new MySqlConfig().getModuleOptions(MySqlConnectionName.Writer, Object.values(Entities))),
     TypeOrmModule.forRoot(new MySqlConfig().getModuleOptions(MySqlConnectionName.Reader, Object.values(Entities))),
+    JwtModule.register(new JwtConfig().getModuleOptions()),
     ThrottlerModule.forRoot([TrafficOption.LIMIT_10S, TrafficOption.LIMIT_30S, TrafficOption.LIMIT_60S]),
     TrafficModule,
     LoggingModule,
     CatchModule,
     LogModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -13,7 +13,7 @@ import { Auth } from './auth.entity';
 
 class Relations {
   @OneToMany(() => Auth, (e) => e.user, {
-    cascade: ['insert', 'update', 'remove'],
+    cascade: true,
   })
   @JoinTable()
   auths: Auth[];
@@ -21,7 +21,11 @@ class Relations {
 
 @Entity()
 export class User extends Relations {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true, comment: 'PK' })
+  @PrimaryGeneratedColumn({
+    type: 'int',
+    unsigned: true,
+    comment: 'PK',
+  })
   readonly id: number;
 
   @Column({
